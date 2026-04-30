@@ -25,6 +25,8 @@ jobs:
       - name: Push Docker image
         run: docker push anjalikavya/ci-cd-demo:latest
 
+      - name: Verify image exists on Docker Hub
+        run: docker pull anjalikavya/ci-cd-demo:${{ github.sha }}
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
         with:

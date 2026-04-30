@@ -32,7 +32,15 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker stop $(docker ps -q) || true
-            docker rm $(docker ps -aq) || true
-            docker pull anjalikavya/ci-cd-demo:latest
-            docker run -d -p 80:5000 anjalikavya/ci-cd-demo:latest
+            set -e
+            IMAGE=anjalikavya/ci-cd-demo:${{ github.sha }}
+
+            docker pull $IMAGE
+
+            docker stop myapp || true
+            docker rm myapp || true
+
+            docker run -d -p 80:5000 --name myapp $IMAGE
+
+            sleep 5
+            curl -f http://localhost:5000
